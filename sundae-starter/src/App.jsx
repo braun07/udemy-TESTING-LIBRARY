@@ -5,7 +5,7 @@ import OrderConfirmation from "./pages/confirmation/OrderConfirmation";
 import OrderEntry from "./pages/entry/OrderEntry";
 import OrderSummary from "./pages/summary/OrderSummary";
 
-import { OrderDetailsProvider } from "./contexts/OrderDetails";
+import { OrderDetailsProvider } from "./context/OrderDetails";
 
 export default function App() {
   // orderPhase needs to be 'inProgress', 'review' or 'completed'

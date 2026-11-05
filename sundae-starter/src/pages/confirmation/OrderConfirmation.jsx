@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOrderDetails } from "../../context/OrderDetails";
-import { Button } from "react-bootstrap/Button";
+import Button from "react-bootstrap/Button";
 import axios from "axios";
 
 export default function OrderConfirmation({ setOrderPhase }) {
@@ -26,16 +26,18 @@ export default function OrderConfirmation({ setOrderPhase }) {
 
     if (orderNumber) {
         return (
-            <div style={{ textAlign: "center" }}>
-                <h1>Thank You!</h1>
-                <p>Your order number is {orderNumber}</p>
-                <p style={{ fontSize: "25%" }}>
-                    as per our terms and conditions, nothing will happen now
-                </p>
-                <Button onClick={handleClick}>
-                    Create new order
-                </Button>
-            </div>
+            <>
+                <div style={{ textAlign: "center" }}>
+                    <h1>Thank You!</h1>
+                    <p>Order Number: {orderNumber}</p>
+                    <p style={{ fontSize: "25%" }}>
+                        as per our terms and conditions, nothing will happen now
+                    </p>
+                    <Button onClick={handleClick}>
+                        Create new order
+                    </Button>
+                </div>
+            </>
         )
     } else {
         return <div>Loading</div>;

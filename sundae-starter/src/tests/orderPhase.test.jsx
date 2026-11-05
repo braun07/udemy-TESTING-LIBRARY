@@ -13,8 +13,9 @@ test("order phases for happy path", async () => {
     await user.clear(vanillaInput);
     await user.type(vanillaInput, '2');
 
-    const hotFudgeInput = await screen.findByRole('checkbox', { name: "Hot fudge" });
-    await user.click(hotFudgeInput);
+    const memsInput = await screen.findByRole('checkbox', { name: "M&Ms" });
+    await user.click(memsInput);
+    expect(memsInput).toBeChecked();
 
     // find and click order button
     const orderButton = screen.getByRole("button", { name: /order sundae/i });
@@ -32,10 +33,10 @@ test("order phases for happy path", async () => {
 
     // check summary items selected
     expect(screen.getByText("2 Vanilla")).toBeInTheDocument();
-    expect(screen.getByText("Hot fudge")).toBeInTheDocument();
+    expect(screen.getByText("M&Ms")).toBeInTheDocument();
 
     // acccept terms and condition and click button to confirm order
-    const termsAndCondition = screen.getByRole('checkbox', { name: "I accept terms and condition" });
+    const termsAndCondition = screen.getByRole('checkbox', { name: /Terms and Conditions/i });
     await user.click(termsAndCondition);
 
     const confirmOrderButton = await screen.findByRole("button", { name: /confirm order/i });
@@ -46,7 +47,7 @@ test("order phases for happy path", async () => {
     expect(loading).toBeInTheDocument();
 
     //check confirmation page text
-    const thanUHeader = await screen.findByRole("heading", { name: /thank you/i });
+    const thanUHeader = await screen.findByRole("heading", { name: /Thank You!/i });
     expect(thanUHeader).toBeInTheDocument();
 
     //expect the loading to disapear
@@ -70,4 +71,52 @@ test("order phases for happy path", async () => {
 
     // unmount the component to trigger cleanup
     unmount();
+});
+
+
+test("Toppings doesnt show if aint selected", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    const vanillaInput = await screen.findByRole('spinbutton', { name: "Vanilla" });
+    await user.clear(vanillaInput);
+    await user.type(vanillaInput, "2");
+
+    const SummaryButton = screen.getByRole("button", { name: /order sundae/i });
+    await user.click(SummaryButton);
+
+    const headingScoops = screen.getByRole("heading", { name: "Scoops: $4.00" });
+    expect(headingScoops).toBeInTheDocument();
+
+    const headingToppings = screen.queryByRole("heading", { name: /toppings/i });
+    expect(headingToppings).not.toBeInTheDocument();
+});
+
+
+test("Toppings doesnt show if is selected then deleted", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    const vanillaInput = await screen.findByRole('spinbutton', { name: "Vanilla" });
+    await user.clear(vanillaInput);
+    await user.type(vanillaInput, "2");
+
+    const cherriesInput = await screen.findByRole('checkbox', { name: "Cherries" });
+    await user.click(cherriesInput);
+    expect(cherriesInput).toBeChecked();
+    const toppingsSubtotal = screen.getByText('Toppings total: $', { exact: false });
+    expect(toppingsSubtotal).toHaveTextContent('1.50');
+
+    await user.click(cherriesInput);
+    expect(cherriesInput).not.toBeChecked();
+    expect(toppingsSubtotal).toHaveTextContent('0.00');
+
+    const SummaryButton = screen.getByRole("button", { name: /order sundae/i });
+    await user.click(SummaryButton);
+
+    const headingScoops = screen.getByRole("heading", { name: "Scoops: $4.00" });
+    expect(headingScoops).toBeInTheDocument();
+
+    const headingToppings = screen.queryByRole("heading", { name: /toppings/i });
+    expect(headingToppings).not.toBeInTheDocument();
 });
