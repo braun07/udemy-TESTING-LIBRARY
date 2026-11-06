@@ -19,7 +19,7 @@ test('handle error for scoops and toppings routes', async () => {
     // const { container } = render(<OrderEntry />);
     render(<OrderEntry />);
 
-    const alerts = await screen.findAllByText("An undexpected error occurred. Please try again later.");
+    const alerts = await screen.findAllByText("An unexpected error occurred. Please try again later.");
     // logRoles(container);
 
     expect(alerts).toHaveLength(2);
